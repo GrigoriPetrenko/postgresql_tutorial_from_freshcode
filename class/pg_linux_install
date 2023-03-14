@@ -1,0 +1,50 @@
+Клієнти СУБД PostgreSQL:
+1. Термінальний клієнт psql.
+2. Pgadmin – графічний клієнт.
+3. Розширення середовищ розробки.
+4. app-server
+...
+
+
+Управління сервісом postgresql:
+- перевірити статус postgresql:
+     $ service postgresql status
+     або
+     $systemctl status postgresql
+    
+- запустити postgresql:
+     $ sudo service postgresql start
+     або
+     $ sudo systemctl start postgresql
+   
+- зупинити postgresql:
+     $ sudo service postgresql stop
+     або
+     $ sudo systemctl stop postgresql
+    
+- Чи знаходиться в автозавантаженні:
+     $ sudo systemctl is-enabled postgresql
+    
+- додати до автозавантаження:
+     $ sudo systemctl enable postgresql
+    
+Установка з'єднання psql з postgresql (СУБД PostgreSQL),
+який локально працює на хості 127.0.0.1 (localhost), дефолтно прослуховує порт 5432,
+від імені ролі (користувача) postgres:
+     $ psql -h 127.0.0.1 -p 5432 -U postgres
+або з дефолтними налаштуваннями
+     $ psql 
+
+Змінити пароль користувачу postgres:
+     $ sudo su postgres
+     $ psql
+     =# ALTER ROLE postgres WITH PASSWORD 'admin'
+	\q
+	exit
+
+Команди psql:
+\? - Довідка
+\l - Показати список баз даних
+\d - Показати список таблиць
+\c ІМ'Я_БАЗИ - підключитися до БД
+\q - Вихід
