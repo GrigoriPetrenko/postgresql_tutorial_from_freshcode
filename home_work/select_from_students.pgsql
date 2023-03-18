@@ -24,4 +24,4 @@ UPDATE STUDENTS
 SET first_name = 'Vasya'
 WHERE first_name = 'Bob';
 -- *Додати до таблиці стовпець з інформацією про серію/номер паспорта студента.
-ALTER TABLE STUDENTS ADD COLUMN passport VARCHAR(8) UNIQUE CHECK (passport ~ '^[A-Z]{2}\d{0,6}$');
+ALTER TABLE STUDENTS ADD COLUMN passport VARCHAR(8) UNIQUE CHECK (passport ~ '^[A-Z]{2}\d{6}$');
