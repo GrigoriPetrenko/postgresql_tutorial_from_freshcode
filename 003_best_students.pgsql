@@ -106,14 +106,52 @@ HAVING AVG(e.mark) > 9.0;
 SELECT *
 FROM Courses
 LEFT JOIN Exams ON Courses.id_course = Exams.id_course
-WHERE Exams.id_course IS NULL;
+WHERE Exams.mark IS NULL;
 -- (Підзапити:)
--- Отримати список студентів, у яких день народження збігається із днем народження Петра Петренка.
--- Відобразити студентів, які мають середній бал вище, ніж Петро Петренко.
--- Отримати список предметів, у яких кількість годин більше, ніж у "Information Technologies".
+-- Отримати список студентів, у яких день народження збігається із днем народження 'John', 'Doe'.
+ALTER TABLE Students ADD COLUMN date_of_birth DATE;
+
+UPDATE Students SET date_of_birth = '1993-05-10' WHERE name = 'John' AND surname = 'Doe';
+UPDATE Students SET date_of_birth = '1995-03-15' WHERE name = 'Jane' AND surname = 'Doe';
+UPDATE Students SET date_of_birth = '1992-07-02' WHERE name = 'Bob' AND surname = 'Smith';
+UPDATE Students SET date_of_birth = '1994-11-20' WHERE name = 'Alice' AND surname = 'Johnson';
+UPDATE Students SET date_of_birth = '1993-05-10' WHERE name = 'Tom' AND surname = 'Wilson';
+
+SELECT name, surname
+FROM Students
+WHERE DATE_TRUNC('day', date_of_birth) = (
+    SELECT DATE_TRUNC('day', date_of_birth)
+    FROM Students
+    WHERE name = 'John' AND surname = 'Doe'
+);
+
+-- Відобразити студентів, які мають середній бал вище, ніж 'John', 'Doe'.
+SELECT name, surname
+FROM Students
+WHERE id_of_student IN (
+    SELECT id_of_student
+    FROM Exams
+    WHERE mark IS NOT NULL
+    GROUP BY id_of_student
+    HAVING AVG(mark) > (
+        SELECT AVG(mark)
+        FROM Exams
+        WHERE id_of_student = (
+            SELECT id_of_student
+            FROM Students
+            WHERE name = 'John' AND surname = 'Doe'
+        ) AND mark IS NOT NULL
+    )
+);
+-- Отримати список предметів, у яких кількість годин більше, ніж у 'Database Systems'.
+SELECT title 
+FROM Courses 
+WHERE hours > (
+    SELECT hours FROM Courses WHERE title = 'Database Systems'
+) AND title <> 'Database Systems';
 -- Отримати список
 -- студент | предмет | оцінка
--- де оцінка має бути більшою за будь-яку оцінку Петра Петренка.
+-- де оцінка має бути більшою за НАЙНИЖЧУ оцінку 'John' 'Doe'.
 -- (Умовні вирази:)
 -- Вивести
 -- студент | предмет | оцінка
