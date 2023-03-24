@@ -152,7 +152,34 @@ WHERE hours > (
 -- Отримати список
 -- студент | предмет | оцінка
 -- де оцінка має бути більшою за НАЙНИЖЧУ оцінку 'John' 'Doe'.
+SELECT
+  s.name || ' ' || s.surname AS student,
+  c.title AS course,
+  e.mark
+FROM
+  Exams e
+  JOIN Students s ON s.id_of_student = e.id_of_student
+  JOIN Courses c ON c.id_course = e.id_course
+WHERE
+e.mark >(
+    SELECT MIN(mark) 
+FROM Exams 
+JOIN Students ON Exams.id_of_student = Students.id_of_student 
+WHERE Students.name = 'John' AND Students.surname = 'Doe'
+)  AND (s.name != 'John' AND s.surname != 'Doe');
 -- (Умовні вирази:)
 -- Вивести
 -- студент | предмет | оцінка
 -- щоб оцінка виводилася у літерному вигляді "відмінно", "добре" або "задовільно".
+SELECT 
+    CONCAT(s.name, ' ', s.surname) AS student,
+    c.title AS course,
+    CASE 
+        WHEN e.mark >= 9 THEN 'відмінно' 
+        WHEN e.mark >= 7 THEN 'добре' 
+        ELSE 'задовільно'
+    END AS mark_letter
+FROM 
+    Exams e 
+    JOIN Students s ON e.id_of_student = s.id_of_student
+    JOIN Courses c ON e.id_course = c.id_course;
